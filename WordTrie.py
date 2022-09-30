@@ -62,10 +62,6 @@ class WordTrie:
             midNode = firstNode.createLetterIfNotExists(midLetter);
             lastNode = midNode.createLetterIfNotExists(lastLetter);
 
-            self.rootNode.letters[firstLetter] = firstNode
-            firstNode.letters[midLetter] = midNode
-            midNode.letters[lastLetter] = lastNode
-
             firstNode.addWord(word)
             lastNode.addWord(word)
 
