@@ -12,11 +12,6 @@ def hebrewLetterToRegular(letter):
     except Exception as e:
         return letter
 
-INIT_LETTER_LEVEL = 0
-FIRST_LETTER_LEVEL = 1
-MID_LETTER_LEVEL = 2
-LAST_LETTER_LEVEL = 3
-LETTER_LEVEL = [INIT_LETTER_LEVEL, FIRST_LETTER_LEVEL, MID_LETTER_LEVEL, LAST_LETTER_LEVEL]
 
 class Word:
     def __init__(self, text):
@@ -157,22 +152,12 @@ class Ribuardle:
                 pass
             else:
                 generated = not self.board.containsDuplicates()
-                
-
-
-
-
 
 with open('hebrew-five-letter-words.txt') as file:
     words = file.readlines()
     rib = Ribuardle(words)
     rib.generateBoard()
 
-    print(rib.board.getTopHorizontalDisplay())
-    print(rib.board.getLeftVerticalDisplay()[1] + rib.board.getMidVerticalDisplay()[1] + rib.board.getRightVerticalDisplay()[1])
-    print(rib.board.getMidHorizontalDisplay())
-    print(rib.board.getLeftVerticalDisplay()[3] + rib.board.getMidVerticalDisplay()[3] + rib.board.getRightVerticalDisplay()[3])
-    print(rib.board.getBottomHorizontalDisplay())
 
     print(rib.board.topHorizontal.get()[::-1])
     print(rib.board.midHorizontal.get()[::-1])
