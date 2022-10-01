@@ -21,21 +21,19 @@ class LetterStatus(Enum):
     CHECKED = 6
     BUFFER = 7
 
-'''class LetterBox(Widget):
+class LetterBox(Widget):
     def __init__(self, **kwargs):
-        super(Widget, self).__init__(**kwargs)
+        super(LetterBox, self).__init__(**kwargs)
 
         self.underlyingLetter = None
+        self.words = []
         self.lastUserInput = None
         self.text = None
-        self.left = None
-        self.right = None
-        self.top = None
-        self.bottom = None
-        self.status = LetterStatus.UNCHECKED'''
-
-class LetterBox(Widget):
-    pass
+        self.toLeft = None
+        self.toRight = None
+        self.toTop = None
+        self.toBottom = None
+        self.status = LetterStatus.UNCHECKED
 
     
 
