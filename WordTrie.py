@@ -17,7 +17,7 @@ class Word:
     def __init__(self, text):
         self.text = text
 
-    def get(self):
+    def label(self):
         return self.text
     
     def firstLetter(self):
@@ -117,24 +117,6 @@ class RibuardleBoard:
     def containsDuplicates(self):
         return len(set(self.words)) < 6
 
-    def getTopHorizontalDisplay(self):
-        return self.topHorizontal.get()[::-1]
-    
-    def getMidHorizontalDisplay(self):
-        return self.midHorizontal.get()[::-1]
-
-    def getBottomHorizontalDisplay(self):
-        return self.bottomHorizontal.get()[::-1]
-
-    def getRightVerticalDisplay(self):
-        return self.rightVertical.get()[::-1]
-    
-    def getMidVerticalDisplay(self):
-        return self.midVertical.get()[::-1]
-    
-    def getLeftVerticalDisplay(self):
-        return self.leftVertical.get()[::-1]
-
 class Ribuardle:
     def __init__(self, words):
         self.trie = WordTrie(words)
@@ -155,13 +137,13 @@ with open('hebrew-five-letter-words.txt') as file:
     rib.generateBoard()
 
 
-    print(rib.board.topHorizontal.get()[::-1])
-    print(rib.board.midHorizontal.get()[::-1])
-    print(rib.board.bottomHorizontal.get()[::-1])
+    print(rib.board.topHorizontal.label()[::-1])
+    print(rib.board.midHorizontal.label()[::-1])
+    print(rib.board.bottomHorizontal.label()[::-1])
 
-    print(rib.board.rightVertical.get()[::-1])
-    print(rib.board.midVertical.get()[::-1])
-    print(rib.board.leftVertical.get()[::-1])
+    print(rib.board.rightVertical.label()[::-1])
+    print(rib.board.midVertical.label()[::-1])
+    print(rib.board.leftVertical.label()[::-1])
 
 
     
