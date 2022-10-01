@@ -13,7 +13,7 @@
         font_size:50
         font_name:"arial"
         center: self.parent.center
-        text: u'\u05D0'
+        text: self.underlyingLetter
         color:  1, 0, 1, 1
 
 <RibuardleGame>:    

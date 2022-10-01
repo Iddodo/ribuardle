@@ -4,17 +4,15 @@
     size_hint: 1, 0.1
     size: 50, 50
     canvas:
+        Color:
+            rgba: self.rgba
         Rectangle:
             pos: self.pos
             size: self.size
-            Color:
-                rgba: 255/255. , 165/255. , 0/255. , 1
         
     Label:
         font_size:50
         font_name:"arial"
         center: self.parent.center
-        text: u'\u05D0'
-        color:  1, 0, 1, 1
-
-<RibuardleBoard>:
+        text: self.parent.underlyingLetter
+        color:  0, 0, 0, 1

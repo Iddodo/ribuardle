@@ -27,6 +27,9 @@ class Word:
     def lastLetter(self):
         return self.text[4]
 
+    def letter(self, i):
+        return self.text[i]
+
 class WordTrieNode:
     def __init__(self):
         self.letters = dict()
@@ -137,12 +140,7 @@ class Ribuardle:
             else:
                 generated = not self.solution.containsDuplicates()
 
-with open('hebrew-five-letter-words.txt', encoding='utf-8') as file:
-    words = file.readlines()
-    rib = Ribuardle(words)
-    rib.generateSolution()
-
-
+'''
     print(
         rib.solution.topHorizontal.label() +
         rib.solution.rightVertical.label()[1] + " " + rib.solution.midVertical.label()[1] + " " +
@@ -150,7 +148,7 @@ with open('hebrew-five-letter-words.txt', encoding='utf-8') as file:
         rib.solution.midHorizontal.label() +
         rib.solution.rightVertical.label()[3] + " " + rib.solution.midVertical.label()[3] + " " +
         rib.solution.leftVertical.label()[3] + "\n" +
-        rib.solution.bottomHorizontal.label())
+        rib.solution.bottomHorizontal.label())'''
 
 
     
