@@ -10,7 +10,7 @@ import kivy.metrics
 from Ribuardle import Ribuardle
 
 from kivy.core.window import Window
-Window.size = (600, 600)
+Window.size = (800, 800)
 
 from enum import Enum
 
@@ -50,16 +50,20 @@ class LetterBox(Widget):
     
 
 class RibuardleBoard(GridLayout, Widget):
+    def calculateSize(self):
+        #return Window.width * self.resize_factor if Window.width * self.resize_factor <= kivy.metrics.dp(500) else kivy.metrics.dp(500)
+        return Window.width * self.resize_factor if Window.width * self.resize_factor <= (Window.height * 0.8 - 10) else (Window.height * 0.8 - 10)
+
     def __init__(self, **kwargs):
         super(RibuardleBoard, self).__init__(**kwargs)
         
-        self.resize_factor = 0.5
+        self.resize_factor = 0.8
         self.cols = 5
         self.rows = 5
         self.spacing = (10, 10)
         self.padding = (10, 10)
-        self.width = self.calculateSize()
-        self.height = self.calculateSize()
+        self.width = 700
+        self.height = 700
         with open('hebrew-five-letter-words.txt', encoding='utf-8') as file:
             words = file.readlines()
             rib = Ribuardle(words)
@@ -152,10 +156,6 @@ class RibuardleBoard(GridLayout, Widget):
         self.height = self.calculateSize()
         self.width = self.calculateSize()
 
-    def calculateSize(self):
-        #return Window.width * self.resize_factor if Window.width * self.resize_factor <= kivy.metrics.dp(500) else kivy.metrics.dp(500)
-        return Window.width * self.resize_factor if Window.width * self.resize_factor <= Window.height * 0.5 - 10 else Window.height * 0.5 - 10
-
 class RibuardleBoardContainer(Widget):
     pass
 
@@ -163,11 +163,12 @@ class RibuardleGame(GridLayout):
     def __init__(self, **kwargs):
         super(RibuardleGame, self).__init__(**kwargs)
         
+        self.padding = (0, 200)
         self.cols = 1
         self.rows = 2
 
-        self.add_widget(RibuardleBoard())
-        self.add_widget(Label(text = "Name "))
+        self.add_widget(RibuardleBoardContainer())
+        self.add_widget(Label(text = "Controls.", font_name = "Arial"))
 
 
 class RibuardleApp(App):

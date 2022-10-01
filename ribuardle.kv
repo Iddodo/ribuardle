@@ -1,8 +1,7 @@
 #:kivy 1.0.9
 
 <LetterBox>:
-    size_hint: 1, 0.1
-    size: 50, 50
+    size: 100, 100
     canvas:
         Color:
             rgba: self.rgba
@@ -16,3 +15,7 @@
         center: self.parent.center
         text: self.parent.underlyingLetter
         color:  0, 0, 0, 1
+
+<RibuardleBoardContainer>:
+    RibuardleBoard:
+        center: self.parent.center
