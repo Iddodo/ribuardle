@@ -72,7 +72,7 @@ class WordTrie:
             lastNode = midNode.letters[last_letter]
             words = lastNode.words
         except Exception as e:
-            print(f"Unexpected {e=}, {type(e)=}")
+            #print(f"Unexpected {e=}, {type(e)=}")
             raise
         else:
             rand_word_num = random.randint(0,len(words) - 1)
@@ -83,7 +83,7 @@ class WordTrie:
         words = self.rootNode.letters[first_letter].words
         return words[random.randint(0, len(words) - 1)]
 
-class RibuardleBoard:
+class RibuardleSolution:
     def __init__(self, trie):
         self.trie = trie
         top_horizontal_first = randomHebrewLetter()
@@ -112,38 +112,45 @@ class RibuardleBoard:
         self.midHorizontal = self.trie.randomWord(mid_horizontal['first'], mid_horizontal['middle'], mid_horizontal['last'])
         self.bottomHorizontal = self.trie.randomWord(bottom_horizontal['first'], bottom_horizontal['middle'], bottom_horizontal['last'])
 
-        self.words = [self.topHorizontal, self.midHorizontal, self.bottomHorizontal, self.rightVertical, self.midVertical, self.leftVertical]
+        #self.words = [self.topHorizontal, self.midHorizontal, self.bottomHorizontal, self.rightVertical, self.midVertical, self.leftVertical]
 
     def containsDuplicates(self):
-        return len(set(self.words)) < 6
+        return len({
+            self.topHorizontal.label(), 
+            self.midHorizontal.label(), 
+            self.bottomHorizontal.label(), 
+            self.rightVertical.label(), 
+            self.midVertical.label(), 
+            self.leftVertical.label()}) < 6
 
 class Ribuardle:
     def __init__(self, words):
         self.trie = WordTrie(words)
 
-    def generateBoard(self):
+    def generateSolution(self):
         generated = False
         while (not generated):
             try:
-                self.board = RibuardleBoard(self.trie)
+                self.solution = RibuardleSolution(self.trie)
             except KeyError:
                 pass
             else:
-                generated = not self.board.containsDuplicates()
+                generated = not self.solution.containsDuplicates()
 
-with open('hebrew-five-letter-words.txt') as file:
+with open('hebrew-five-letter-words.txt', encoding='utf-8') as file:
     words = file.readlines()
     rib = Ribuardle(words)
-    rib.generateBoard()
+    rib.generateSolution()
 
 
-    print(rib.board.topHorizontal.label()[::-1])
-    print(rib.board.midHorizontal.label()[::-1])
-    print(rib.board.bottomHorizontal.label()[::-1])
-
-    print(rib.board.rightVertical.label()[::-1])
-    print(rib.board.midVertical.label()[::-1])
-    print(rib.board.leftVertical.label()[::-1])
+    print(
+        rib.solution.topHorizontal.label() +
+        rib.solution.rightVertical.label()[1] + " " + rib.solution.midVertical.label()[1] + " " +
+        rib.solution.leftVertical.label()[1] + "\n" +
+        rib.solution.midHorizontal.label() +
+        rib.solution.rightVertical.label()[3] + " " + rib.solution.midVertical.label()[3] + " " +
+        rib.solution.leftVertical.label()[3] + "\n" +
+        rib.solution.bottomHorizontal.label())
 
 
     
