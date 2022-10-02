@@ -18,10 +18,12 @@
 
 <RibuardleGame>:
     RibuardleBoardContainer:
-
+        id: board_container
     Label:
+        id: controls_label
         text: "Controls."
         font_name: "Arial"
+        color: 0.75, 0, 0, 1
 
 <RibuardleBoardContainer>:
     RibuardleBoard:
@@ -29,4 +31,4 @@
     
     Label:
         color: 1, 1, 1, 1
-        text: self.parent.parent.userLetter
+        text: "default"

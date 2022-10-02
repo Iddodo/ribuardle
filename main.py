@@ -51,9 +51,9 @@ class LetterBox(Widget):
 
 class RibuardleBoard(GridLayout, Widget):
     def calculateSize(self):
-        #return Window.width * self.resize_factor if Window.width * self.resize_factor <= kivy.metrics.dp(500) else kivy.metrics.dp(500)
+        return Window.width * self.resize_factor if Window.width * self.resize_factor <= kivy.metrics.dp(500) else kivy.metrics.dp(500)
         #return Window.width * self.resize_factor if Window.width * self.resize_factor <= (Window.height * 0.8 - 10) else (Window.height * 0.8 - 10)
-        return 700
+        #return 700
     def __init__(self, **kwargs):
         super(RibuardleBoard, self).__init__(**kwargs)
         
@@ -178,8 +178,10 @@ class RibuardleGame(GridLayout):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        self.ids.controls_label.text = keycode[1]
         print(keycode[1])
         self.userLetter = keycode[1]
+
         return True
 
 
