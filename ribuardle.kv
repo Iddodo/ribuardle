@@ -16,6 +16,17 @@
         text: self.parent.underlyingLetter
         color:  0, 0, 0, 1
 
+<RibuardleGame>:
+    RibuardleBoardContainer:
+
+    Label:
+        text: "Controls."
+        font_name: "Arial"
+
 <RibuardleBoardContainer>:
     RibuardleBoard:
         center: self.parent.center
+    
+    Label:
+        color: 1, 1, 1, 1
+        text: self.parent.parent.userLetter

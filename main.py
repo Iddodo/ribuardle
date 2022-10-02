@@ -52,8 +52,8 @@ class LetterBox(Widget):
 class RibuardleBoard(GridLayout, Widget):
     def calculateSize(self):
         #return Window.width * self.resize_factor if Window.width * self.resize_factor <= kivy.metrics.dp(500) else kivy.metrics.dp(500)
-        return Window.width * self.resize_factor if Window.width * self.resize_factor <= (Window.height * 0.8 - 10) else (Window.height * 0.8 - 10)
-
+        #return Window.width * self.resize_factor if Window.width * self.resize_factor <= (Window.height * 0.8 - 10) else (Window.height * 0.8 - 10)
+        return 700
     def __init__(self, **kwargs):
         super(RibuardleBoard, self).__init__(**kwargs)
         
@@ -62,8 +62,8 @@ class RibuardleBoard(GridLayout, Widget):
         self.rows = 5
         self.spacing = (10, 10)
         self.padding = (10, 10)
-        self.width = 700
-        self.height = 700
+        self.width = self.calculateSize()
+        self.height = self.calculateSize()
         with open('hebrew-five-letter-words.txt', encoding='utf-8') as file:
             words = file.readlines()
             rib = Ribuardle(words)
@@ -161,14 +161,26 @@ class RibuardleBoardContainer(Widget):
 
 class RibuardleGame(GridLayout):
     def __init__(self, **kwargs):
-        super(RibuardleGame, self).__init__(**kwargs)
         
         self.padding = (0, 200)
         self.cols = 1
         self.rows = 2
 
-        self.add_widget(RibuardleBoardContainer())
-        self.add_widget(Label(text = "Controls.", font_name = "Arial"))
+        self.userLetter = '?'
+        
+        super(RibuardleGame, self).__init__(**kwargs)
+
+        # Listen to keyboard
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
+
+    def _keyboard_closed(self):
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard = None
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        print(keycode[1])
+        self.userLetter = keycode[1]
+        return True
 
 
 class RibuardleApp(App):
