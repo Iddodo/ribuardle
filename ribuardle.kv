@@ -10,13 +10,17 @@
             size: self.size
         
     Label:
+        id: label
         font_size:50
         font_name:"arial"
         center: self.parent.center
-        text: self.parent.underlyingLetter
+        text: self.parent.lastUserInput
         color:  0, 0, 0, 1
 
 <RibuardleGame>:
+    padding: 0, 200
+    cols: 1
+    rows: 2
     RibuardleBoardContainer:
         id: board_container
     Label:
@@ -28,7 +32,7 @@
 <RibuardleBoardContainer>:
     RibuardleBoard:
         center: self.parent.center
-    
+        id: ribuardle_board
     Label:
         color: 1, 1, 1, 1
         text: "default"

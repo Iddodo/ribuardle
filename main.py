@@ -27,7 +27,7 @@ class LetterBox(Widget):
     def __init__(self, letter = '', word = None, left = None, right = None, top = None, bottom = None, status = LetterStatus.UNCHECKED, **kwargs):
         self.underlyingLetter = letter
         self.words = [word]
-        self.lastUserInput = None
+        self.lastUserInput = ''
         self.toLeft = left
         self.toRight = right
         self.toTop = top
@@ -45,11 +45,41 @@ class LetterBox(Widget):
         
         self.status = status
 
+    def setLetter(self, letter):
+        self.lastUserInput = letter
+        self.ids.label.text = letter
 
+    def validateLetter(self):
+        if self.underlyingLetter == self.lastUserInput:
+            print('xD')
 
     
 
 class RibuardleBoard(GridLayout, Widget):
+    numTurnsInRound = 3
+    turn = 0
+    turnWordIndex = 0
+    remainingTurns = 10
+    
+    topHorizontal = []
+    midHorizontal = []
+    bottomHorizontal = []
+
+    rightVertical = []
+    midVertical = []
+    leftVertical = []
+
+    lettersIn = {
+        topHorizontal: [],
+    }
+
+    turnMapping = {
+            0: [topHorizontal, rightVertical],
+            1: [midHorizontal, midVertical],
+            2: [bottomHorizontal, leftVertical]
+    }
+    def letterBoxListToWord(self, lst):
+        return [box.underlyingLetter() for box in lst].join('')
     def calculateSize(self):
         return Window.width * self.resize_factor if Window.width * self.resize_factor <= kivy.metrics.dp(500) else kivy.metrics.dp(500)
         #return Window.width * self.resize_factor if Window.width * self.resize_factor <= (Window.height * 0.8 - 10) else (Window.height * 0.8 - 10)
@@ -69,13 +99,15 @@ class RibuardleBoard(GridLayout, Widget):
             rib = Ribuardle(words)
             rib.generateSolution()
 
-        topHorizontal = []
-        midHorizontal = []
-        bottomHorizontal = []
+        self.solution = rib
 
-        rightVertical = []
-        midVertical = []
-        leftVertical = []
+        topHorizontal = self.topHorizontal
+        midHorizontal = self.midHorizontal
+        bottomHorizontal = self.bottomHorizontal
+
+        rightVertical = self.rightVertical
+        midVertical = self.midVertical
+        leftVertical = self.leftVertical
 
         buffer_boxes = [LetterBox(status = LetterStatus.BUFFER) for i in range(0,4)]
 
@@ -156,19 +188,72 @@ class RibuardleBoard(GridLayout, Widget):
         self.height = self.calculateSize()
         self.width = self.calculateSize()
 
+    def incrementTurn(self):
+        if self.remainingTurns <= 0:
+            print("meow")
+            raise
+        self.turn += 1
+        self.remainingTurns -= 1
+        print(self.remainingTurns)
+        self.turnWordIndex = 0
+
+    def passKey(self, userLetter):
+        firstWord, secondWord = self.turnMapping[self.turn % self.numTurnsInRound]
+        if userLetter == 'enter':
+            if self.turnWordIndex != 5:
+                return
+            
+            self.incrementTurn()
+        elif userLetter == 'backspace':
+            if self.turnWordIndex <= 0:
+                return
+            
+            self.turnWordIndex -= 1
+            firstWord[self.turnWordIndex].setLetter('')
+            secondWord[self.turnWordIndex].setLetter('')
+
+        else:
+            if self.turnWordIndex == 5:
+                return
+            
+            firstWord[self.turnWordIndex].setLetter(userLetter)
+            secondWord[self.turnWordIndex].setLetter(userLetter)
+            self.turnWordIndex = self.turnWordIndex + 1
+            
+
+
 class RibuardleBoardContainer(Widget):
     pass
 
 class RibuardleGame(GridLayout):
-    def __init__(self, **kwargs):
+    hebrew_keycode = 'קראטופשדגכעיחלזסבהנמצת'
+    english_keycode = 'ertyupasdfghjkzxcvbnm,'
+
+    def englishLetterToHebrew(self, letter, keycode = -1):
+        # This line is needed for Hebrew layout
+        if keycode == 1514:
+            return 'ת'
         
-        self.padding = (0, 200)
-        self.cols = 1
-        self.rows = 2
+        # Allow backspace and enter keys
+        elif keycode == 8:
+            return 'backspace'
+
+        elif keycode == 13:
+            return 'enter'
+
+        return self.hebrew_keycode[self.english_keycode.index(letter)]
+
+    def getTurnWords(self):
+        return self.board.getTurnWords(self.turn % self.numTurnsInRound)
+
+    def __init__(self, **kwargs):
 
         self.userLetter = '?'
-        
+        self.turns = -1
+
         super(RibuardleGame, self).__init__(**kwargs)
+
+        self.board = self.ids.board_container.ids.ribuardle_board
 
         # Listen to keyboard
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
@@ -178,11 +263,16 @@ class RibuardleGame(GridLayout):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        self.ids.controls_label.text = keycode[1]
-        print(keycode[1])
-        self.userLetter = keycode[1]
+        try:
+            self.userLetter = self.englishLetterToHebrew(keycode[1], keycode[0])
+        except Exception as e:
+            return
 
-        return True
+        self.ids.controls_label.text = self.userLetter
+        print(self.userLetter + " " + str(keycode[0]))
+
+        self.board.passKey(self.userLetter)
+        #self.turns = self.board.turn
 
 
 class RibuardleApp(App):

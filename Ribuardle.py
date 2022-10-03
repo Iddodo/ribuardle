@@ -115,16 +115,20 @@ class RibuardleSolution:
         self.midHorizontal = self.trie.randomWord(mid_horizontal['first'], mid_horizontal['middle'], mid_horizontal['last'])
         self.bottomHorizontal = self.trie.randomWord(bottom_horizontal['first'], bottom_horizontal['middle'], bottom_horizontal['last'])
 
-        #self.words = [self.topHorizontal, self.midHorizontal, self.bottomHorizontal, self.rightVertical, self.midVertical, self.leftVertical]
+
+
+        self.words = [self.topHorizontal, self.midHorizontal, self.bottomHorizontal, self.rightVertical, self.midVertical, self.leftVertical]
+
+        self.lettersInSolution = []
+        for word in self.words:
+            for letter in word.label():
+                if letter in word.label():
+                    break
+                self.lettersInSolution.append(letter)
+
 
     def containsDuplicates(self):
-        return len({
-            self.topHorizontal.label(), 
-            self.midHorizontal.label(), 
-            self.bottomHorizontal.label(), 
-            self.rightVertical.label(), 
-            self.midVertical.label(), 
-            self.leftVertical.label()}) < 6
+        return len(set(self.words)) < 6
 
 class Ribuardle:
     def __init__(self, words):
