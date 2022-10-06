@@ -4,6 +4,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
 from kivy.properties import ListProperty
+from kivy.graphics import Rectangle, Color
 
 import kivy.metrics
 
@@ -12,16 +13,8 @@ from Ribuardle import Ribuardle
 from kivy.core.window import Window
 Window.size = (800, 800)
 
-from enum import Enum
-
-class LetterStatus(Enum):
-    UNCHECKED = 1
-    EXISTS_IN_ROW = 2
-    EXISTS_IN_COLUMN = 3
-    EXISTS_IN_ROW_AND_COLUMN = 4
-    NOT_IN_PUZZLE = 5
-    CHECKED = 6
-    BUFFER = 7
+from Enums import LetterStatus
+#from Enums import RibuardleBoardPosition
 
 class LetterBox(Widget):
     def __init__(self, letter = '', word = None, left = None, right = None, top = None, bottom = None, status = LetterStatus.UNCHECKED, **kwargs):
@@ -32,18 +25,15 @@ class LetterBox(Widget):
         self.toRight = right
         self.toTop = top
         self.toBottom = bottom
-        self.rgba = ListProperty((1,1,1,1))
+        self.rgba = Color((1,1,1,1))
         self.setStatus(status)
         super(LetterBox, self).__init__(**kwargs)
         # Design LetterBox according to status
     
     def setStatus(self, status):
-        if status == LetterStatus.BUFFER:
-            self.rgba = (0,0,0,1)
-        else:
-            self.rgba = (1,1,1,1)
-        
         self.status = status
+        self.rgba = LetterStatus.getColor(status)
+
 
     def setLetter(self, letter):
         self.lastUserInput = letter
@@ -69,17 +59,14 @@ class RibuardleBoard(GridLayout, Widget):
     midVertical = []
     leftVertical = []
 
-    lettersIn = {
-        topHorizontal: [],
-    }
-
     turnMapping = {
             0: [topHorizontal, rightVertical],
             1: [midHorizontal, midVertical],
             2: [bottomHorizontal, leftVertical]
     }
-    def letterBoxListToWord(self, lst):
-        return [box.underlyingLetter() for box in lst].join('')
+    def letterBoxListToWord(self, box_list):
+        return ''.join([box.lastUserInput for box in box_list])
+    
     def calculateSize(self):
         return Window.width * self.resize_factor if Window.width * self.resize_factor <= kivy.metrics.dp(500) else kivy.metrics.dp(500)
         #return Window.width * self.resize_factor if Window.width * self.resize_factor <= (Window.height * 0.8 - 10) else (Window.height * 0.8 - 10)
@@ -197,11 +184,23 @@ class RibuardleBoard(GridLayout, Widget):
         print(self.remainingTurns)
         self.turnWordIndex = 0
 
+    def turnPosition(self) :
+        return self.turn % self.numTurnsInRound
     def passKey(self, userLetter):
-        firstWord, secondWord = self.turnMapping[self.turn % self.numTurnsInRound]
+        horizontalWord, verticalWord = self.turnMapping[self.turnPosition()]
+
         if userLetter == 'enter':
             if self.turnWordIndex != 5:
                 return
+
+            horizonalResult, verticalResult = self.solution.testGuess(self.letterBoxListToWord(horizontalWord), self.turnPosition())
+
+            for i, status in enumerate(horizonalResult):
+                horizontalWord[i].setStatus(status)
+
+            for i, status in enumerate(verticalResult):
+                verticalWord[i].setStatus(status)
+            
             
             self.incrementTurn()
         elif userLetter == 'backspace':
@@ -209,15 +208,15 @@ class RibuardleBoard(GridLayout, Widget):
                 return
             
             self.turnWordIndex -= 1
-            firstWord[self.turnWordIndex].setLetter('')
-            secondWord[self.turnWordIndex].setLetter('')
+            horizontalWord[self.turnWordIndex].setLetter('')
+            verticalWord[self.turnWordIndex].setLetter('')
 
         else:
             if self.turnWordIndex == 5:
                 return
             
-            firstWord[self.turnWordIndex].setLetter(userLetter)
-            secondWord[self.turnWordIndex].setLetter(userLetter)
+            horizontalWord[self.turnWordIndex].setLetter(userLetter)
+            verticalWord[self.turnWordIndex].setLetter(userLetter)
             self.turnWordIndex = self.turnWordIndex + 1
             
 
