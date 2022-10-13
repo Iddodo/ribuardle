@@ -3,6 +3,8 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+
 from kivy.properties import ListProperty
 from kivy.graphics import Rectangle, Color
 
@@ -16,7 +18,13 @@ Window.size = (800, 800)
 from Enums import LetterStatus
 #from Enums import RibuardleBoardPosition
 
-class LetterBox(Widget):
+class LetterBoxLayout(GridLayout):
+    pass
+
+class DefaultLetterBoxLayout(LetterBoxLayout):
+    pass
+
+class LetterBox(GridLayout):
     def __init__(self, letter = '', word = None, left = None, right = None, top = None, bottom = None, status = LetterStatus.UNCHECKED, **kwargs):
         self.underlyingLetter = letter
         self.words = [word]
@@ -25,19 +33,36 @@ class LetterBox(Widget):
         self.toRight = right
         self.toTop = top
         self.toBottom = bottom
-        self.rgba = Color((1,1,1,1))
         self.setStatus(status)
+        self.rows = 5
+        self.cols = 5
         super(LetterBox, self).__init__(**kwargs)
         # Design LetterBox according to status
-    
+
+        self.label = self.ids.label
+
+    def redraw(self):
+
+        self.canvas.before.clear()
+        with self.canvas.before:
+            Color(*self.rgba)
+            Rectangle(pos = self.pos, size = self.size)
+        
+
     def setStatus(self, status):
         self.status = status
         self.rgba = LetterStatus.getColor(status)
 
+        print("Status: ", self.status, " ;; rgba: ", self.rgba)
+
+        # Do not execute on init
+        if self.canvas:
+            self.redraw()
+
 
     def setLetter(self, letter):
         self.lastUserInput = letter
-        self.ids.label.text = letter
+        self.label.text = letter
 
     def validateLetter(self):
         if self.underlyingLetter == self.lastUserInput:
@@ -194,6 +219,9 @@ class RibuardleBoard(GridLayout, Widget):
                 return
 
             horizonalResult, verticalResult = self.solution.testGuess(self.letterBoxListToWord(horizontalWord), self.turnPosition())
+
+            print(horizonalResult)
+            print(verticalResult)
 
             for i, status in enumerate(horizonalResult):
                 horizontalWord[i].setStatus(status)

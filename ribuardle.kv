@@ -2,20 +2,24 @@
 
 <LetterBox>:
     size: 100, 100
-    canvas:
+    rows: 5
+    cols: 5
+
+    canvas.before:
         Color:
             rgba: self.rgba
         Rectangle:
             pos: self.pos
             size: self.size
-        
     Label:
-        id: label
+        id: "label"
         font_size:50
         font_name:"arial"
         center: self.parent.center
         text: self.parent.lastUserInput
         color:  0, 0, 0, 1
+
+
 
 <RibuardleGame>:
     padding: 0, 200
