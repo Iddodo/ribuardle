@@ -39,7 +39,7 @@ class LetterBox(GridLayout):
         super(LetterBox, self).__init__(**kwargs)
         # Design LetterBox according to status
 
-        self.label = self.ids.label
+        self.label = self.ids.letter_label
 
     def redraw(self):
 
